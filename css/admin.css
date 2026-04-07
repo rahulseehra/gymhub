@@ -1,0 +1,613 @@
+/**
+ * GymHub - Admin Panel Stylesheet
+ * public/css/admin.css
+ *
+ * Styles specific to the admin panel pages in /admin/.
+ * This file is loaded AFTER main.css and the active theme CSS,
+ * so it can override public site styles where needed.
+ *
+ * The admin panel has a completely different layout from the public site:
+ *   - Fixed left sidebar (240px wide) for navigation
+ *   - Main content area takes the remaining width
+ *   - No announcement bar or public navigation header
+ *   - Data tables, form cards, and status badges
+ *
+ * IMPORTANT:
+ * The top of this file resets several public site styles that would
+ * otherwise conflict with the admin layout. Specifically, the public
+ * site's .site-header and .announcement-bar are hidden, and the
+ * #main-content element is reset so it doesn't interfere with the
+ * admin flex layout.
+ *
+ * File structure:
+ *   1.  Reset public site styles (hide nav, reset main)
+ *   2.  Admin layout (flex container, sidebar, main wrap)
+ *   3.  Sidebar (fixed position, nav links, footer)
+ *   4.  Topbar (page title bar at top of main area)
+ *   5.  Stat cards (the four overview numbers on the dashboard)
+ *   6.  Data tables (all admin tables with sortable headers)
+ *   7.  Form cards (add/edit forms wrapped in a card)
+ *   8.  Status badges (coloured labels for active/inactive/confirmed etc.)
+ *   9.  Alerts (success and error message boxes)
+ *  10.  Theme cards (the three colour preview cards on theme.php)
+ *  11.  Monitoring cards (the service check cards on monitoring.php)
+ *  12.  Dashboard layout (two-column grid and quick actions)
+ *  13.  Responsive (tablet and mobile adjustments)
+ */
+
+/* ════════════════════════════════════════════════════════════
+   1. RESET PUBLIC SITE STYLES
+   The admin pages include main.css for shared styles (fonts,
+   buttons, colour variables) but we need to hide or reset
+   elements that are only meant for the public-facing site.
+   ════════════════════════════════════════════════════════════ */
+
+/* Hide the orange announcement bar — not relevant in admin */
+.admin-body .announcement-bar { display: none !important; }
+
+/* Hide the public sticky navigation header */
+.admin-body .site-header { display: none !important; }
+
+/* Reset the #main-content element completely.
+   "all: unset" removes every CSS property so admin layout takes over.
+   Without this, main.css rules on <main> would break the admin grid. */
+.admin-body #main-content { all: unset; display: block !important; }
+
+/* ════════════════════════════════════════════════════════════
+   2. ADMIN LAYOUT
+   A flex container that holds the sidebar and main content
+   side by side, filling the full viewport height.
+   ════════════════════════════════════════════════════════════ */
+.admin-body {
+    background: var(--color-bg);
+    overflow-x: hidden;
+}
+
+/* Flex row — sidebar on left, main content on right */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ════════════════════════════════════════════════════════════
+   3. SIDEBAR
+   Fixed position so it stays visible while the main content
+   scrolls. 240px wide. Hidden on mobile by default.
+   ════════════════════════════════════════════════════════════ */
+.admin-sidebar {
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    position: fixed; /* stays in place while main content scrolls */
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 240px;
+    overflow-y: auto; /* scroll if nav links don't fit */
+    z-index: 200;     /* above the main content */
+    transition: transform var(--transition-normal); /* smooth slide for toggle */
+    flex-shrink: 0;
+}
+
+/* Slides sidebar off-screen when collapsed (JS toggleSidebar function) */
+.admin-sidebar--collapsed { transform: translateX(-240px); }
+
+/* Top of sidebar: logo + ADMIN badge */
+.admin-sidebar-header {
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0; /* never gets squished */
+}
+
+/* Logo link — GYM HUB in display font */
+.admin-logo {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--color-text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.admin-logo strong { color: var(--color-accent); font-weight: 900; }
+
+/* Red "Admin" pill badge next to the logo */
+.admin-badge {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: var(--color-danger);
+    color: #fff;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+}
+
+/* Navigation container */
+.admin-nav { padding: var(--space-md) 0; flex: 1; }
+
+/* Section group (Overview, Content, Users, etc.) */
+.admin-nav-section { margin-bottom: var(--space-md); }
+
+/* Small uppercase label above each group of links */
+.nav-section-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    padding: 0 var(--space-lg);
+    margin-bottom: 0.3rem;
+}
+
+/* Individual nav link */
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem var(--space-lg);
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    border-left: 3px solid transparent; /* orange indicator for active link */
+    white-space: nowrap;
+}
+
+.admin-nav-link:hover {
+    color: var(--color-text);
+    background: var(--color-surface-2);
+}
+
+/* Active link — orange left border + orange text + tinted background */
+.admin-nav-link.active {
+    color: var(--color-accent);
+    background: var(--color-accent-glow);
+    border-left-color: var(--color-accent);
+}
+
+/* Log Out link — always shown in red to make it stand out */
+.admin-nav-link--danger { color: var(--color-danger) !important; }
+.admin-nav-link--danger:hover { background: rgba(239,68,68,0.1) !important; }
+
+/* Bottom of sidebar: logged-in admin's name and initial avatar */
+.admin-sidebar-footer {
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.admin-user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+/* Orange circle with first letter of admin's name */
+.admin-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: #000;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.admin-user-info strong { display: block; font-size: 0.85rem; color: var(--color-text); }
+.admin-user-info span   { font-size: 0.75rem; color: var(--color-text-muted); }
+
+/* ════════════════════════════════════════════════════════════
+   4. MAIN CONTENT WRAP
+   Sits to the right of the fixed sidebar.
+   margin-left pushes it past the sidebar's 240px width.
+   ════════════════════════════════════════════════════════════ */
+.admin-main-wrap {
+    margin-left: 240px;   /* make room for the fixed sidebar */
+    flex: 1;
+    min-width: 0;         /* prevents flex children from overflowing */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Sticky top bar — stays visible when scrolling long tables */
+.admin-topbar {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0 var(--space-xl);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    position: sticky;
+    top: 0;
+    z-index: 100; /* above the table content but below the sidebar */
+    flex-shrink: 0;
+}
+
+/* Hamburger button that toggles the sidebar on small screens */
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+}
+
+/* Page title in the topbar */
+.admin-page-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-text);
+    flex: 1; /* takes all available space, pushes theme indicator right */
+    margin: 0;
+}
+
+.admin-topbar-right { color: var(--color-text-muted); font-size: 0.85rem; }
+.theme-indicator strong { color: var(--color-accent); } /* orange theme name */
+
+/* Page content padding */
+.admin-content {
+    padding: var(--space-xl);
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* ════════════════════════════════════════════════════════════
+   5. STAT CARDS
+   The four overview cards on the dashboard (members, bookings etc.)
+   Each has an icon on the left and number + label on the right.
+   ════════════════════════════════════════════════════════════ */
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* four equal columns */
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+.admin-stat-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+/* Emoji icon in an orange-tinted square */
+.stat-icon {
+    font-size: 1.8rem;
+    width: 48px; height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent-glow);
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+}
+
+/* The big number */
+.stat-info strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--color-accent);
+    line-height: 1;
+}
+
+/* The label below the number */
+.stat-info span { font-size: 0.8rem; color: var(--color-text-muted); }
+
+/* ════════════════════════════════════════════════════════════
+   6. DATA TABLES
+   Used on bookings, users, and classes pages.
+   Striped hover, sticky header, horizontally scrollable.
+   ════════════════════════════════════════════════════════════ */
+.admin-table-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--space-xl);
+    width: 100%;
+}
+
+/* Card header row with title and action button */
+.admin-table-header {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+}
+
+.admin-table-header h3 { font-size: 1rem; margin: 0; }
+
+/* Full-width table */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+/* Column header cells */
+.admin-table th {
+    text-align: left;
+    padding: 0.65rem var(--space-lg);
+    background: var(--color-surface-2);
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+}
+
+/* Data cells */
+.admin-table td {
+    padding: 0.65rem var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-light);
+    font-size: 0.875rem;
+    vertical-align: middle;
+}
+
+.admin-table tr:last-child td { border-bottom: none; } /* no border on last row */
+.admin-table tr:hover td { background: var(--color-surface-2); } /* hover highlight */
+
+/* ════════════════════════════════════════════════════════════
+   7. FORM CARDS
+   White card wrapper around add/edit forms.
+   Used on the manage classes and answer question forms.
+   ════════════════════════════════════════════════════════════ */
+.admin-form-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-xl);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-form-card h3 { margin-bottom: var(--space-lg); font-size: 1.1rem; }
+
+/* Form fields stacked vertically */
+.admin-form { display: flex; flex-direction: column; gap: var(--space-md); }
+
+/* Individual field group: label above input */
+.form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.form-group label { font-size: 0.875rem; font-weight: 600; color: var(--color-text); }
+
+/* All input types share the same base style */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    padding: 0.65rem 0.9rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    outline: none;
+    width: 100%;
+    transition: border-color var(--transition-fast);
+    box-sizing: border-box;
+}
+
+/* Orange border glow when focused */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: var(--color-accent); }
+
+.form-group textarea { resize: vertical; } /* only allow vertical resize */
+
+/* Two-column form row */
+.form-row   { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+/* Three-column form row */
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-md); }
+
+/* ════════════════════════════════════════════════════════════
+   8. STATUS BADGES
+   Coloured pill labels used for booking status, user status,
+   class status, question status etc.
+   ════════════════════════════════════════════════════════════ */
+.badge {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+}
+
+.badge--success { background: rgba(34,197,94,0.15);  color: var(--color-success); } /* green */
+.badge--danger  { background: rgba(239,68,68,0.15);  color: var(--color-danger);  } /* red */
+.badge--warning { background: rgba(245,158,11,0.15); color: var(--color-warning); } /* amber */
+.badge--accent  { background: var(--color-accent-glow); color: var(--color-accent); } /* orange */
+.badge--muted   { background: var(--color-surface-2); color: var(--color-text-muted); } /* grey */
+
+/* ════════════════════════════════════════════════════════════
+   9. ALERTS
+   Success and error message boxes shown after form submissions.
+   ════════════════════════════════════════════════════════════ */
+.alert {
+    padding: var(--space-md);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    border: 1px solid transparent;
+    margin-bottom: var(--space-lg);
+}
+.alert-danger  { background: rgba(239,68,68,0.1);  border-color: var(--color-danger);  color: var(--color-danger); }
+.alert-success { background: rgba(34,197,94,0.1);  border-color: var(--color-success); color: var(--color-success); }
+.alert ul { padding-left: 1.2rem; margin-top: 0.4rem; } /* indent bullet lists in alerts */
+
+/* Action button group inside table rows */
+.table-actions { display: flex; gap: var(--space-sm); align-items: center; flex-wrap: wrap; }
+
+/* ════════════════════════════════════════════════════════════
+   10. THEME CARDS (admin/theme.php)
+   Three side-by-side preview cards for selecting the site theme.
+   Each shows colour swatches, a name, description, and button.
+   ════════════════════════════════════════════════════════════ */
+.theme-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-lg); }
+
+.theme-card {
+    background: var(--color-surface-2);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-normal);
+}
+
+/* Active theme card gets an orange border glow */
+.theme-card--active { border-color: var(--color-accent); box-shadow: var(--shadow-accent); }
+.theme-card:hover   { transform: translateY(-4px); }
+
+/* Three coloured strips showing the theme's palette */
+.theme-preview { display: flex; height: 80px; }
+.color-swatch  { flex: 1; } /* each swatch takes equal width */
+
+.theme-info { padding: var(--space-lg); display: flex; flex-direction: column; gap: var(--space-sm); }
+.theme-info h4 { font-size: 1.1rem; margin: 0; }
+.theme-preview-label { color: var(--color-accent); font-size: 0.85rem; font-family: var(--font-display); font-weight: 600; }
+.theme-info p  { color: var(--color-text-muted); font-size: 0.85rem; line-height: 1.5; margin: 0; }
+
+/* ════════════════════════════════════════════════════════════
+   11. MONITORING CARDS (admin/monitoring.php)
+   Service status cards with a coloured left border and pulsing dot.
+   ════════════════════════════════════════════════════════════ */
+
+/* Full-width banner at the top of the monitoring page */
+.monitoring-banner {
+    display: flex; align-items: center; gap: var(--space-xl);
+    padding: var(--space-xl); border-radius: var(--radius-lg);
+    border: 1px solid; margin-bottom: var(--space-xl); flex-wrap: wrap;
+}
+.monitoring-banner--success { background: rgba(34,197,94,0.08);  border-color: var(--color-success); }
+.monitoring-banner--warning { background: rgba(245,158,11,0.08); border-color: var(--color-warning); }
+.monitoring-banner--danger  { background: rgba(239,68,68,0.08);  border-color: var(--color-danger); }
+.monitoring-banner-icon { font-size: 3rem; }
+.monitoring-banner h3 { margin-bottom: 0.25rem; font-size: 1.1rem; }
+.monitoring-banner p  { color: var(--color-text-muted); font-size: 0.9rem; margin: 0; }
+.monitoring-timestamp { margin-left: auto; text-align: right; color: var(--color-text-muted); font-size: 0.82rem; }
+
+/* Two-column grid of individual check cards */
+.monitoring-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: var(--space-md); }
+
+.check-card {
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: var(--space-lg);
+    display: flex; align-items: center; gap: var(--space-md);
+}
+
+/* Coloured left border indicates status at a glance */
+.check-card--online  { border-left: 4px solid var(--color-success); }
+.check-card--warning { border-left: 4px solid var(--color-warning); }
+.check-card--offline { border-left: 4px solid var(--color-danger); }
+
+/* Small circle dot that pulses green for online services */
+.check-status-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.check-card--online  .check-status-dot {
+    background: var(--color-success);
+    box-shadow: 0 0 8px var(--color-success);
+    animation: pulse 2s infinite; /* pulsing glow animation */
+}
+.check-card--warning .check-status-dot { background: var(--color-warning); }
+.check-card--offline .check-status-dot { background: var(--color-danger); }
+
+.check-info { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; }
+.check-info strong { font-size: 0.9rem; color: var(--color-text); }
+.check-info span   { font-size: 0.8rem; color: var(--color-text-muted); }
+
+/* Pulse animation for the green online dots */
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* ════════════════════════════════════════════════════════════
+   12. DASHBOARD LAYOUT (admin/dashboard.php)
+   Two-column grid: recent bookings table + right column.
+   Quick action button grid below.
+   ════════════════════════════════════════════════════════════ */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px; /* table is wider, right column is fixed width */
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+.dashboard-right { display: flex; flex-direction: column; gap: var(--space-lg); min-width: 0; }
+.quick-actions h3 { margin-bottom: var(--space-md); }
+
+/* Four equal quick action buttons */
+.quick-actions-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--space-md); }
+
+.quick-action-card {
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: var(--space-lg);
+    text-align: center; text-decoration: none; color: var(--color-text-muted);
+    font-size: 0.875rem; display: flex; flex-direction: column;
+    gap: var(--space-sm); align-items: center; transition: all var(--transition-normal);
+}
+.quick-action-card span:first-child { font-size: 1.5rem; } /* emoji icon */
+.quick-action-card:hover { border-color: var(--color-accent); color: var(--color-accent); transform: translateY(-2px); }
+
+/* ════════════════════════════════════════════════════════════
+   13. RESPONSIVE
+   The admin panel adapts to smaller screens.
+   On mobile, the sidebar is hidden and toggled with the ☰ button.
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1200px) {
+    /* Stack dashboard columns on smaller desktops */
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .quick-actions-grid { grid-template-columns: repeat(2,1fr); }
+}
+
+@media (max-width: 1024px) {
+    /* Reduce stat cards to 2 per row on tablets */
+    .admin-stats { grid-template-columns: repeat(2,1fr); }
+    /* Stack theme cards */
+    .theme-grid  { grid-template-columns: 1fr 1fr; }
+    /* Stack monitoring cards */
+    .monitoring-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    /* Sidebar hidden by default on mobile — JS toggles it open */
+    .admin-sidebar { transform: translateX(-240px); }
+    .admin-sidebar.admin-sidebar--open { transform: translateX(0); }
+
+    /* Main content takes full width when sidebar is hidden */
+    .admin-main-wrap { margin-left: 0; }
+
+    /* Reduce padding and columns */
+    .admin-stats { grid-template-columns: 1fr 1fr; }
+    .form-row, .form-row-3 { grid-template-columns: 1fr; } /* stack form fields */
+    .theme-grid { grid-template-columns: 1fr; }
+    .admin-content { padding: var(--space-md); }
+}

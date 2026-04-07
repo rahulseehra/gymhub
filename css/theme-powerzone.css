@@ -1,0 +1,44 @@
+/**
+ * GymHub - Theme: PowerZone (Default Theme)
+ * public/css/theme-powerzone.css
+ *
+ * The default dark theme for GymHub.
+ * Dark charcoal background with electric orange accents.
+ * Bold and energetic — perfect for a high-performance gym brand.
+ *
+ * HOW THEMES WORK IN GYMHUB:
+ * ─────────────────────────────────────────────────────────────
+ * All colours on the site are CSS variables (custom properties)
+ * defined in main.css under the :root selector. For example:
+ *   --color-accent: #f97316;  (orange)
+ *   --color-bg: #0f0f0f;      (dark background)
+ *
+ * A theme file overrides those variables by redefining them inside
+ * a class selector that matches the <body> class. So when the body has
+ * class="theme-powerzone", this file's rules take effect and all
+ * components automatically use the new colour values.
+ *
+ * The admin switches themes from admin/theme.php. The chosen theme
+ * name is saved to the database. header.php reads it on every page
+ * load and includes this CSS file + adds the class to <body>.
+ *
+ * POWERZONE PALETTE:
+ *   #0f0f0f  — very dark charcoal page background
+ *   #1a1a1a  — slightly lighter for cards and panels
+ *   #f97316  — electric orange — the main brand accent colour
+ *   #f0f0f0  — near white text for contrast on dark backgrounds
+ */
+
+.theme-powerzone {
+    /*
+     * PowerZone's values match the defaults already set in main.css :root,
+     * so no variable overrides are needed here.
+     *
+     * This file exists so all three themes follow exactly the same pattern.
+     * If you want to customise PowerZone (e.g. change orange to red),
+     * add your overrides here like this:
+     *
+     *   --color-accent:      #e63946;
+     *   --color-accent-dark: #c1121f;
+     */
+}

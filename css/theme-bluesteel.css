@@ -1,0 +1,79 @@
+/**
+ * GymHub - Theme: BlueSteel (Dark Navy Theme)
+ * public/css/theme-bluesteel.css
+ *
+ * A deep navy and steel blue theme with a premium, professional feel.
+ * Suited to corporate gym memberships, elite training programmes,
+ * and audiences who prefer a more refined, understated aesthetic.
+ *
+ * How to apply this theme:
+ *   Log in as admin → go to admin/theme.php → click "Apply Theme"
+ *   under BlueSteel. The whole site changes instantly for all visitors.
+ *
+ * BLUESTEEL PALETTE:
+ *   #0d1b2a  — deep navy page background
+ *   #132338  — slightly lighter navy for card surfaces
+ *   #1a2e47  — medium navy for nested/secondary surfaces
+ *   #4a9eda  — steel blue — the main accent colour
+ *   #2e7db5  — darker blue for hover states
+ *   #e8f0f8  — very light blue-white for text
+ *   #7a9ab8  — muted blue-grey for secondary text
+ *
+ * HOW IT WORKS:
+ * This file overrides CSS variables from main.css :root.
+ * The <body> gets class="theme-bluesteel" and these colour values
+ * apply throughout the entire site automatically.
+ */
+
+.theme-bluesteel {
+    /* ── Backgrounds ── */
+    --color-bg:        #0d1b2a;  /* deep navy — darkest background layer */
+    --color-surface:   #132338;  /* medium navy for card and panel backgrounds */
+    --color-surface-2: #1a2e47;  /* slightly lighter for nested elements */
+    --color-border:    #243d5a;  /* navy border colour — subtle separation */
+
+    /* ── Accent (steel blue replaces orange) ── */
+    --color-accent:      #4a9eda;               /* steel blue — main brand colour */
+    --color-accent-dark: #2e7db5;               /* darker blue for hover states */
+    --color-accent-glow: rgba(74, 158, 218, 0.2); /* transparent blue glow effect */
+
+    /* ── Text colours ── */
+    --color-text:       #e8f0f8;  /* very light blue-white for primary text */
+    --color-text-muted: #7a9ab8;  /* blue-grey for secondary/muted text */
+    --color-text-light: #b8cfe0;  /* lighter blue for body paragraphs */
+    --color-white:      #ffffff;
+
+    /* ── Announcement bar ── */
+    --announcement-bg:   #4a9eda;  /* blue background instead of orange */
+    --announcement-text: #000000;  /* black text on blue */
+}
+
+/*
+ * Header background uses the deep navy with transparency
+ * for the frosted glass effect in the sticky header.
+ */
+.theme-bluesteel .site-header {
+    background: rgba(13, 27, 42, 0.96);
+    border-bottom-color: #243d5a;
+}
+
+/*
+ * The hero overlay leans into the navy blue palette,
+ * with a hint of steel blue on the right side.
+ */
+.theme-bluesteel .hero-overlay {
+    background: linear-gradient(
+        135deg,
+        rgba(13, 27, 42, 0.9) 0%,     /* deep navy on left */
+        rgba(13, 27, 42, 0.55) 60%,   /* semi-transparent in middle */
+        rgba(74, 158, 218, 0.12) 100% /* hint of steel blue on right */
+    );
+}
+
+/*
+ * The CTA banner uses a blue gradient instead of the default orange one.
+ * We need to override the specific gradient set in main.css.
+ */
+.theme-bluesteel .cta-banner {
+    background: linear-gradient(135deg, #4a9eda 0%, #2e7db5 100%);
+}

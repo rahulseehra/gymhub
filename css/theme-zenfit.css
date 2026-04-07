@@ -1,0 +1,87 @@
+/**
+ * GymHub - Theme: ZenFit (Light Theme)
+ * public/css/theme-zenfit.css
+ *
+ * A calm, clean light theme with sage green accents.
+ * Designed to feel peaceful and welcoming — ideal for
+ * yoga, pilates, meditation and wellness class audiences.
+ *
+ * How to apply this theme:
+ *   Log in as admin → go to admin/theme.php → click "Apply Theme"
+ *   under ZenFit. The site immediately changes for all visitors.
+ *
+ * ZENFIT PALETTE:
+ *   #f8f7f4  — warm off-white page background (softer than pure white)
+ *   #ffffff  — pure white for card surfaces
+ *   #f0ede8  — very light beige for nested elements
+ *   #5a7f5a  — sage green — the main accent colour
+ *   #3f5c3f  — darker green for hover states
+ *   #1a1a1a  — near black text for readability on light background
+ *
+ * HOW IT WORKS:
+ * This file overrides the CSS variables from main.css :root.
+ * The <body> gets class="theme-zenfit" and these variables apply
+ * to every component — cards, buttons, nav, everything.
+ * No component-specific CSS changes are needed.
+ */
+
+.theme-zenfit {
+    /* ── Backgrounds ── */
+    --color-bg:        #f8f7f4;  /* warm off-white page background */
+    --color-surface:   #ffffff;  /* white card backgrounds */
+    --color-surface-2: #f0ede8;  /* slightly warmer for nested elements */
+    --color-border:    #ddd8d0;  /* light warm grey borders */
+
+    /* ── Accent (sage green replaces orange) ── */
+    --color-accent:      #5a7f5a;               /* sage green — main brand colour */
+    --color-accent-dark: #3f5c3f;               /* darker green for hover states */
+    --color-accent-glow: rgba(90, 127, 90, 0.15); /* transparent green for badge backgrounds */
+
+    /* ── Text colours (dark for light background) ── */
+    --color-text:       #1a1a1a;  /* near black — high contrast on white */
+    --color-text-muted: #777777;  /* medium grey for secondary info */
+    --color-text-light: #444444;  /* slightly lighter for body text */
+    --color-white:      #ffffff;
+
+    /* ── Announcement bar ── */
+    --announcement-bg:   #5a7f5a;  /* green background instead of orange */
+    --announcement-text: #ffffff;  /* white text on green */
+}
+
+/*
+ * The header needs a light background to match the theme.
+ * We override the rgba() background set inline in main.css.
+ */
+.theme-zenfit .site-header {
+    background: rgba(248, 247, 244, 0.95); /* semi-transparent warm white */
+    border-bottom-color: #ddd8d0;
+}
+
+/*
+ * The hero overlay is lighter and greener on ZenFit
+ * so the hero feels calm rather than dramatic.
+ */
+.theme-zenfit .hero-overlay {
+    background: linear-gradient(
+        135deg,
+        rgba(248, 247, 244, 0.9) 0%,   /* near opaque warm white on left */
+        rgba(240, 237, 232, 0.7) 60%,  /* semi-transparent in middle */
+        rgba(90, 127, 90, 0.1) 100%    /* hint of green on right */
+    );
+}
+
+/*
+ * Hero text needs to be dark on the light ZenFit overlay.
+ * Without this, the white text from main.css would be invisible.
+ */
+.theme-zenfit .hero-title,
+.theme-zenfit .hero-badge,
+.theme-zenfit .hero-stat strong {
+    color: var(--color-text); /* near black — readable on the light overlay */
+}
+
+/* The accent word "Harder." stays green to keep visual interest */
+.theme-zenfit .hero-accent {
+    color: var(--color-accent);
+    -webkit-text-stroke: 2px var(--color-accent);
+}

@@ -1,0 +1,1366 @@
+/**
+ * GymHub - Main Stylesheet
+ * public/css/main.css
+ *
+ * This is the single external CSS file for the entire GymHub website.
+ * It controls every visual aspect of the site — layout, colours, fonts,
+ * spacing, animations, and responsive behaviour.
+ *
+ * How theming works:
+ *   This file defines the default colour values as CSS variables in :root.
+ *   The three theme files (theme-powerzone.css, theme-zenfit.css,
+ *   theme-bluesteel.css) override those variables to change the look.
+ *   Swapping the theme file is all that's needed to restyle the whole site.
+ *
+ * File structure:
+ *   1.  CSS Variables (colour palette, spacing, typography settings)
+ *   2.  Reset & Base (remove browser defaults, set box-sizing)
+ *   3.  Typography (heading sizes, paragraph styles, utility text classes)
+ *   4.  Layout Utilities (container, section padding, text alignment)
+ *   5.  Buttons (all button variants and sizes)
+ *   6.  Announcement Bar (the thin orange strip at the very top)
+ *   7.  Navigation (header, logo, nav links, dropdown, hamburger)
+ *   8.  Hero Section (full-height homepage banner)
+ *   9.  Categories (the icon grid of class categories)
+ *  10.  Class Cards (the cards on the classes page)
+ *  11.  Membership Cards (the pricing tier cards)
+ *  12.  Instructor Cards (the trainer profile cards)
+ *  13.  Testimonials (member review quote cards)
+ *  14.  Video Section (the homepage video banner)
+ *  15.  CTA Banner (the orange call-to-action strip)
+ *  16.  Footer (four-column footer with bottom bar)
+ *  17.  Animations (keyframe definitions used throughout)
+ *  18.  Wiki Pages (styles for the help documentation pages)
+ *  19.  Help Bar (the context-sensitive wiki link bar at page tops)
+ *  20.  Responsive (media queries for tablet and mobile screens)
+ */
+
+/* ════════════════════════════════════════════════════════════
+   1. CSS VARIABLES
+   All colours, fonts, spacing, and sizing are defined here as
+   CSS custom properties (variables). Using variables means we
+   can change the entire colour scheme by editing one place.
+   Theme files override these same variable names to restyle
+   the site without touching this file at all.
+   ════════════════════════════════════════════════════════════ */
+:root {
+    /* ── Colour palette ── */
+    --color-bg:          #0f0f0f;          /* Main page background — very dark charcoal */
+    --color-surface:     #1a1a1a;          /* Card and panel background */
+    --color-surface-2:   #242424;          /* Slightly lighter surface for nested elements */
+    --color-border:      #2e2e2e;          /* Subtle borders between elements */
+    --color-accent:      #f97316;          /* Main brand colour — electric orange */
+    --color-accent-dark: #c2580e;          /* Darker orange for hover states */
+    --color-accent-glow: rgba(249, 115, 22, 0.25); /* Transparent orange for glows and badges */
+    --color-text:        #f0f0f0;          /* Primary text — near white */
+    --color-text-muted:  #888888;          /* Secondary text — grey for less important info */
+    --color-text-light:  #cccccc;          /* Body text — slightly dimmer than primary */
+    --color-white:       #ffffff;          /* Pure white — used sparingly */
+    --color-success:     #22c55e;          /* Green — for success messages and confirmed states */
+    --color-danger:      #ef4444;          /* Red — for errors, warnings, and cancel actions */
+    --color-warning:     #f59e0b;          /* Amber — for pending/warning states */
+
+    /* ── Typography ── */
+    --font-display: 'Barlow Condensed', sans-serif; /* Headlines, nav, badges — tight and bold */
+    --font-body:    'Barlow', sans-serif;            /* Body text, forms — readable and clean */
+
+    /* ── Spacing scale ── */
+    /* These create a consistent rhythm throughout the layout */
+    --space-xs:  0.25rem;   /*  4px */
+    --space-sm:  0.5rem;    /*  8px */
+    --space-md:  1rem;      /* 16px */
+    --space-lg:  1.5rem;    /* 24px */
+    --space-xl:  2rem;      /* 32px */
+    --space-2xl: 3rem;      /* 48px */
+    --space-3xl: 5rem;      /* 80px */
+
+    /* ── Layout ── */
+    --container-max: 1200px;   /* Maximum page width — content doesn't stretch wider than this */
+    --nav-height:    70px;     /* Height of the sticky navigation bar */
+    --radius-sm:     4px;      /* Slight rounding on small elements like buttons */
+    --radius-md:     8px;      /* Medium rounding on cards */
+    --radius-lg:     16px;     /* Larger rounding on bigger cards */
+    --radius-full:   9999px;   /* Fully rounded — used for pill/badge shapes */
+
+    /* ── Shadows ── */
+    --shadow-sm:     0 1px 3px rgba(0,0,0,0.4);          /* Subtle lift for small elements */
+    --shadow-md:     0 4px 16px rgba(0,0,0,0.5);         /* Medium depth for cards */
+    --shadow-lg:     0 8px 32px rgba(0,0,0,0.6);         /* Strong shadow for modals/popups */
+    --shadow-accent: 0 4px 20px var(--color-accent-glow); /* Orange glow for highlighted cards */
+
+    /* ── Transitions ── */
+    --transition-fast:   0.15s ease;  /* Snappy — for hover colour changes */
+    --transition-normal: 0.25s ease;  /* Standard — for most animations */
+    --transition-slow:   0.4s ease;   /* Slow — for image zoom effects */
+
+    /* ── Announcement bar ── */
+    --announcement-bg:   var(--color-accent); /* Orange background by default */
+    --announcement-text: #000;                /* Black text on orange */
+}
+
+/* ════════════════════════════════════════════════════════════
+   2. RESET & BASE
+   Remove browser default styles that vary between Chrome,
+   Firefox, Safari etc. This gives us a consistent starting
+   point across all browsers.
+   ════════════════════════════════════════════════════════════ */
+*, *::before, *::after {
+    box-sizing: border-box; /* padding and border included in element width — much easier to work with */
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth; /* smooth scrolling when clicking anchor links */
+    font-size: 16px;         /* base font size — rem values are relative to this */
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    overflow-x: hidden; /* prevent horizontal scrollbar from appearing */
+}
+
+img {
+    max-width: 100%; /* images never overflow their container */
+    height: auto;
+    display: block;  /* removes the small gap below inline images */
+}
+
+a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover { color: var(--color-accent-dark); }
+
+ul { list-style: none; }
+
+/* ════════════════════════════════════════════════════════════
+   3. TYPOGRAPHY
+   Heading sizes scale fluidly using clamp() — they're large
+   on desktop and automatically smaller on mobile without
+   needing media queries for every heading.
+   ════════════════════════════════════════════════════════════ */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+}
+
+/* clamp(min, preferred, max) — fluid scaling between viewport sizes */
+h1 { font-size: clamp(2.5rem, 8vw, 5rem); }
+h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); }
+h3 { font-size: clamp(1.2rem, 2.5vw, 1.6rem); }
+h4 { font-size: 1.1rem; font-weight: 700; }
+
+p { color: var(--color-text-light); line-height: 1.7; }
+
+/* Section tag — the small pill label above section titles */
+.section-tag {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    background: var(--color-accent-glow);
+    border: 1px solid var(--color-accent);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-sm);
+}
+
+/* Section header — the centred title block above most content grids */
+.section-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+}
+
+.section-title    { margin-bottom: var(--space-sm); }
+.section-subtitle { max-width: 550px; margin: 0 auto; color: var(--color-text-muted); }
+.section-cta      { text-align: center; margin-top: var(--space-2xl); }
+
+/* Utility text classes */
+.text-center { text-align: center; }
+.text-muted  { color: var(--color-text-muted); }
+.text-accent { color: var(--color-accent); }
+
+/* ════════════════════════════════════════════════════════════
+   4. LAYOUT UTILITIES
+   The container centres content and limits the max width.
+   section-pad adds consistent vertical spacing to page sections.
+   ════════════════════════════════════════════════════════════ */
+.container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--space-lg); /* side padding so content doesn't touch screen edges */
+}
+
+.section-pad { padding: var(--space-3xl) 0; } /* 80px top and bottom */
+
+/* ════════════════════════════════════════════════════════════
+   5. BUTTONS
+   All buttons share the .btn base class. Modifiers like
+   .btn-primary add colour. Size modifiers like .btn-lg change
+   padding and font size.
+   ════════════════════════════════════════════════════════════ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.65rem 1.5rem;
+    border-radius: var(--radius-sm);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+/* Orange filled button — main call to action */
+.btn-primary {
+    background: var(--color-accent);
+    color: #000;
+    border-color: var(--color-accent);
+}
+.btn-primary:hover {
+    background: var(--color-accent-dark);
+    border-color: var(--color-accent-dark);
+    color: #000;
+    box-shadow: var(--shadow-accent);
+    transform: translateY(-2px); /* subtle lift on hover */
+}
+
+/* Dark filled button — secondary actions */
+.btn-secondary {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+.btn-secondary:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateY(-2px);
+}
+
+/* Transparent button with border — used on coloured backgrounds */
+.btn-outline {
+    background: transparent;
+    color: var(--color-text);
+    border-color: var(--color-text);
+}
+.btn-outline:hover {
+    background: var(--color-text);
+    color: var(--color-bg);
+}
+
+/* Red button — destructive actions like cancel/delete */
+.btn-danger {
+    background: var(--color-danger);
+    color: #fff;
+    border-color: var(--color-danger);
+}
+
+/* Size variants */
+.btn-lg { font-size: 1.1rem; padding: 0.85rem 2rem; }
+.btn-sm { font-size: 0.85rem; padding: 0.4rem 1rem; }
+
+/* ════════════════════════════════════════════════════════════
+   6. ANNOUNCEMENT BAR
+   The thin strip at the very top of every page.
+   Shows a promotional message and a link to the classes page.
+   ════════════════════════════════════════════════════════════ */
+.announcement-bar {
+    background: var(--announcement-bg);
+    color: var(--announcement-text);
+    text-align: center;
+    padding: 0.4rem var(--space-md);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.announcement-bar a {
+    color: inherit;
+    text-decoration: underline;
+    font-weight: 700;
+}
+
+/* ════════════════════════════════════════════════════════════
+   7. NAVIGATION
+   The sticky header stays at the top of the screen as the user
+   scrolls. It uses backdrop-filter: blur() to create a frosted
+   glass effect over the content scrolling behind it.
+   ════════════════════════════════════════════════════════════ */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* sits above all other page content */
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(12px);          /* frosted glass blur effect */
+    -webkit-backdrop-filter: blur(12px);  /* Safari prefix */
+    border-bottom: 1px solid var(--color-border);
+    height: var(--nav-height);
+    transition: background var(--transition-normal);
+}
+
+.navbar {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xl);
+}
+
+/* Logo — the ⚡ GYMHUB wordmark */
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+    color: var(--color-text);
+    flex-shrink: 0; /* logo never gets squished */
+}
+
+.logo-icon { font-size: 1.4rem; }
+
+.logo-text {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: var(--color-text);
+}
+
+.logo-text strong {
+    color: var(--color-accent); /* HUB is orange */
+    font-weight: 900;
+}
+
+/* Desktop nav link list */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+}
+
+.nav-links a {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--color-accent);
+    background: var(--color-accent-glow);
+}
+
+/* The "Join Now" button in the nav has a special filled style */
+.nav-cta {
+    background: var(--color-accent) !important;
+    color: #000 !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 0.4rem 1rem !important;
+}
+.nav-cta:hover {
+    background: var(--color-accent-dark) !important;
+    color: #000 !important;
+}
+
+/* Dropdown menu — shown on hover for the user account link */
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle { cursor: pointer; }
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    min-width: 200px;
+    box-shadow: var(--shadow-lg);
+    padding: 0.5rem 0;
+    z-index: 100;
+}
+
+.nav-dropdown:hover .dropdown-menu { display: block; } /* show on hover */
+
+.dropdown-menu li a {
+    display: block;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    color: var(--color-text-light) !important;
+    background: none !important;
+    text-transform: none;
+    letter-spacing: 0;
+}
+.dropdown-menu li a:hover { color: var(--color-accent) !important; }
+
+/* Thin divider line inside dropdown menus */
+.dropdown-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: 0.25rem 0;
+}
+
+/* Mobile hamburger button — three horizontal lines */
+.nav-hamburger {
+    display: none; /* hidden on desktop, shown via media query on mobile */
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.nav-hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--color-text);
+    transition: all var(--transition-normal);
+    border-radius: 2px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   8. HERO SECTION
+   The full-height banner on the homepage. The background image
+   is covered by a gradient overlay so text stays readable.
+   Content animates in using CSS keyframes on page load.
+   ════════════════════════════════════════════════════════════ */
+.hero {
+    position: relative;
+    min-height: 92vh; /* almost full screen height */
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* The background image container — fills the entire hero */
+.hero-bg {
+    position: absolute;
+    inset: 0; /* shorthand for top/right/bottom/left: 0 */
+    z-index: 0;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Dark gradient overlay so the white text is readable over the image */
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(0,0,0,0.85) 0%,   /* very dark on the left where text is */
+        rgba(0,0,0,0.5) 60%,   /* medium dark in the middle */
+        rgba(249,115,22,0.15) 100% /* slight orange tint on the right */
+    );
+    z-index: 1;
+}
+
+/* The text content sits above the image and overlay */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-lg);
+    animation: fadeInUp 0.8s ease both; /* slides up on page load */
+}
+
+/* Small pill label above the main headline */
+.hero-badge {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-md);
+    animation: fadeInUp 0.8s ease 0.1s both; /* slight delay after content */
+}
+
+/* The huge headline — scales fluidly with viewport width */
+.hero-title {
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    font-weight: 900;
+    line-height: 0.95;
+    margin-bottom: var(--space-lg);
+    animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+/* The word "Harder." in orange — draws the eye */
+.hero-accent {
+    color: var(--color-accent);
+    -webkit-text-stroke: 2px var(--color-accent);
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    color: var(--color-text-light);
+    max-width: 480px;
+    margin-bottom: var(--space-xl);
+    animation: fadeInUp 0.8s ease 0.3s both;
+}
+
+/* The two CTA buttons side by side */
+.hero-actions {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-2xl);
+    animation: fadeInUp 0.8s ease 0.4s both;
+}
+
+/* The small stats (Members, Classes etc.) below the buttons */
+.hero-stats {
+    display: flex;
+    gap: var(--space-xl);
+    flex-wrap: wrap;
+    animation: fadeInUp 0.8s ease 0.5s both;
+}
+
+.hero-stat { display: flex; flex-direction: column; }
+
+.hero-stat strong {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-accent);
+    line-height: 1;
+}
+
+.hero-stat span {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* Bouncing scroll indicator arrow at the bottom of the hero */
+.hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: fadeIn 1s ease 1s both; /* appears after everything else */
+}
+
+.scroll-arrow {
+    width: 20px;
+    height: 20px;
+    border-right: 2px solid var(--color-text-muted);
+    border-bottom: 2px solid var(--color-text-muted);
+    transform: rotate(45deg); /* makes a downward-pointing chevron */
+    animation: bounce 1.5s infinite;
+}
+
+/* ════════════════════════════════════════════════════════════
+   9. CATEGORY GRID
+   The row of clickable category icons below the hero.
+   Each icon links to the classes page filtered by that category.
+   ════════════════════════════════════════════════════════════ */
+.categories {
+    background: var(--color-surface);
+    padding: var(--space-xl) 0;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 equal columns on desktop */
+    gap: var(--space-md);
+}
+
+.category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: var(--space-md);
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--color-text-muted);
+    transition: all var(--transition-normal);
+}
+
+.category-card:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateY(-4px); /* lifts up on hover */
+    box-shadow: var(--shadow-accent);
+}
+
+.category-icon  { font-size: 1.8rem; }
+.category-label {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ════════════════════════════════════════════════════════════
+   10. CLASS CARDS
+   Used on the homepage (featured) and classes page (catalog).
+   Image at the top with overlapping badges, info below.
+   Lifts up and gets an orange border on hover.
+   ════════════════════════════════════════════════════════════ */
+.classes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-lg);
+}
+
+.class-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+}
+
+.class-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-accent);
+}
+
+/* Image container with fixed height — image is cropped to fill */
+.class-card-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.class-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+/* Image zooms in slightly when the card is hovered */
+.class-card:hover .class-card-image img { transform: scale(1.05); }
+
+/* Category badge overlaid on the top-left of the image */
+.class-category-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: var(--color-accent);
+    color: #000;
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+}
+
+/* Price badge overlaid on the top-right of the image */
+.class-price-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: rgba(0,0,0,0.75);
+    color: var(--color-accent);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+    backdrop-filter: blur(4px);
+}
+
+.class-card-body {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    flex: 1; /* takes up remaining height so all cards are equal */
+}
+
+.class-title       { font-size: 1.2rem; font-weight: 800; color: var(--color-text); }
+.class-description { font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5; }
+
+/* Small metadata row — duration, capacity, rating */
+.class-meta {
+    display: flex;
+    gap: var(--space-md);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+/* The two option chips — e.g. "Beginner" and "Advanced" */
+.class-options {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    margin-top: auto; /* pushed to the bottom of the card */
+    padding-top: var(--space-sm);
+}
+
+.option-chip {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+}
+
+/* ════════════════════════════════════════════════════════════
+   11. MEMBERSHIP CARDS
+   Three pricing tier cards. The middle (Pro) card is scaled up
+   slightly and has an orange border to stand out as recommended.
+   ════════════════════════════════════════════════════════════ */
+.membership-preview { background: var(--color-surface); }
+
+.membership-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-lg);
+    align-items: start;
+}
+
+.membership-card {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    position: relative;
+    transition: all var(--transition-normal);
+    text-align: center;
+}
+
+.membership-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+
+/* The highlighted middle card — Pro plan */
+.membership-card--popular {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-accent);
+    transform: scale(1.04); /* slightly bigger to emphasize it */
+}
+
+/* "Most Popular" ribbon at the top of the Pro card */
+.popular-badge {
+    position: absolute;
+    top: -0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-accent);
+    color: #000;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.8rem;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+}
+
+.membership-icon  { font-size: 2.5rem; margin-bottom: var(--space-sm); }
+.membership-name  { font-size: 1.4rem; margin-bottom: var(--space-sm); }
+
+.membership-price { margin-bottom: var(--space-lg); }
+
+.price-amount {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--color-accent);
+}
+
+.price-period { color: var(--color-text-muted); font-size: 0.9rem; }
+
+.membership-features {
+    text-align: left;
+    list-style: none;
+    margin-bottom: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.membership-features li { color: var(--color-text-light); font-size: 0.9rem; }
+
+/* ════════════════════════════════════════════════════════════
+   12. INSTRUCTOR CARDS
+   Used on the homepage spotlight and the instructors page.
+   Image fills the top, info below. Orange border on hover.
+   ════════════════════════════════════════════════════════════ */
+.instructors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-lg);
+}
+
+.instructor-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-normal);
+}
+
+.instructor-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-accent);
+}
+
+.instructor-photo { height: 240px; overflow: hidden; }
+
+.instructor-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.instructor-card:hover .instructor-photo img { transform: scale(1.04); }
+
+.instructor-info {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+/* Orange uppercase specialty label e.g. "Strength, CrossFit" */
+.instructor-specialties {
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.instructor-rating { color: var(--color-text-muted); font-size: 0.9rem; }
+.instructor-bio    { color: var(--color-text-muted); font-size: 0.875rem; }
+
+/* ════════════════════════════════════════════════════════════
+   13. TESTIMONIALS
+   Member review cards with star ratings and quoted text.
+   Used on the homepage to build social proof.
+   ════════════════════════════════════════════════════════════ */
+.testimonials { background: var(--color-surface); }
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-lg);
+}
+
+.testimonial-card {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.testimonial-stars  { font-size: 1rem; }
+.testimonial-text   { color: var(--color-text-light); font-size: 1rem; line-height: 1.65; flex: 1; }
+
+.testimonial-author {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-md);
+}
+
+.testimonial-author strong { color: var(--color-text); font-size: 0.95rem; }
+.testimonial-author span   { color: var(--color-text-muted); font-size: 0.8rem; }
+
+/* ════════════════════════════════════════════════════════════
+   14. VIDEO SECTION
+   The dark banner on the homepage with a background image
+   and a play button that opens the video in a lightbox popup.
+   ════════════════════════════════════════════════════════════ */
+.video-section {
+    position: relative;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Background image — darkened so text is readable */
+.video-bg-image {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.video-bg-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.3); /* darken the image significantly */
+}
+
+/* Text and button overlaid on the darkened image */
+.video-overlay-text {
+    position: relative;
+    z-index: 2;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    max-width: 600px;
+}
+
+.video-overlay-text h2 { color: var(--color-white); }
+.video-overlay-text p  { color: var(--color-text-light); }
+
+/* Lightbox overlay — covers the entire screen when video is playing */
+.video-lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 9999; /* on top of everything */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+}
+
+.video-lightbox[hidden] { display: none; } /* hidden attribute hides it */
+
+.video-lightbox-inner {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* X close button positioned above the video */
+.video-close-btn {
+    position: absolute;
+    top: -2.5rem;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--color-white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+/* ════════════════════════════════════════════════════════════
+   15. CTA BANNER
+   The bold orange full-width strip near the bottom of the
+   homepage encouraging users to join or book a class.
+   ════════════════════════════════════════════════════════════ */
+.cta-banner {
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+    padding: var(--space-3xl) 0;
+    text-align: center;
+}
+
+.cta-content h2 { color: #000; margin-bottom: var(--space-sm); }
+.cta-content p  { color: rgba(0,0,0,0.7); margin-bottom: var(--space-xl); }
+
+.cta-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* On the orange background, the primary button is black */
+.cta-banner .btn-primary {
+    background: #000;
+    border-color: #000;
+    color: var(--color-accent);
+}
+
+.cta-banner .btn-outline  { border-color: #000; color: #000; }
+.cta-banner .btn-outline:hover { background: #000; color: var(--color-accent); }
+
+/* ════════════════════════════════════════════════════════════
+   16. FOOTER
+   Four-column footer with brand info, nav links, member links,
+   and help links. A bottom bar with copyright and legal links.
+   ════════════════════════════════════════════════════════════ */
+.site-footer {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-3xl);
+}
+
+.footer-inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--space-lg) var(--space-2xl);
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr; /* brand column is wider */
+    gap: var(--space-2xl);
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-text);
+    margin-bottom: var(--space-md);
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 400;
+}
+
+.footer-brand p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: var(--space-md);
+}
+
+/* Social media icon buttons */
+.footer-socials { display: flex; gap: var(--space-sm); }
+
+.footer-socials a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+}
+
+.footer-socials a:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+}
+
+/* Column headings — small uppercase labels */
+.footer-col h4 {
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+}
+
+.footer-col ul { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.footer-col ul li a {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    transition: color var(--transition-fast);
+}
+
+.footer-col ul li a:hover { color: var(--color-accent); }
+
+/* Bottom copyright bar */
+.footer-bottom {
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-md) var(--space-lg);
+    max-width: var(--container-max);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.footer-bottom p, .footer-bottom a { color: var(--color-text-muted); font-size: 0.85rem; }
+.footer-bottom a:hover { color: var(--color-accent); }
+
+/* ════════════════════════════════════════════════════════════
+   17. ANIMATIONS
+   Keyframe definitions used by elements throughout the page.
+   fadeInUp is used for the hero section on page load.
+   bounce is used by the scroll arrow in the hero.
+   ════════════════════════════════════════════════════════════ */
+
+/* Slides element up while fading in — used for staggered hero content */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Simple fade in — used for the scroll indicator */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Bounces the chevron arrow up and down */
+@keyframes bounce {
+    0%, 100% { transform: rotate(45deg) translateY(0); }
+    50%       { transform: rotate(45deg) translateY(6px); }
+}
+
+/* ════════════════════════════════════════════════════════════
+   18. WIKI PAGES
+   Styles for the five help documentation pages in /wiki/.
+   A sidebar nav on the left, article content on the right.
+   Step numbers, callout boxes, and code blocks.
+   ════════════════════════════════════════════════════════════ */
+.wiki-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: var(--space-2xl);
+    align-items: start;
+}
+
+/* Sticky sidebar — stays visible as the user scrolls the article */
+.wiki-nav {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    position: sticky;
+    top: 90px; /* below the sticky header */
+}
+
+.wiki-nav h4 {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+}
+
+.wiki-nav ul { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+
+.wiki-nav a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+.wiki-nav a:hover         { color: var(--color-accent); background: var(--color-accent-glow); }
+.wiki-nav li.active a     { color: var(--color-accent); background: var(--color-accent-glow); font-weight: 600; }
+
+/* Article content area */
+.wiki-content h2 { font-size: 1.5rem; margin: var(--space-xl) 0 var(--space-md); }
+.wiki-content h2:first-child { margin-top: 0; }
+.wiki-content h3 { font-size: 1.1rem; margin: var(--space-lg) 0 var(--space-sm); }
+.wiki-content p  { color: var(--color-text-light); line-height: 1.8; margin-bottom: var(--space-md); }
+
+/* Numbered step layout — orange circle on the left, content on the right */
+.wiki-step {
+    display: flex;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    align-items: flex-start;
+}
+
+.step-number {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: #000;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* never gets squished */
+}
+
+.step-content        { flex: 1; }
+.step-content h3     { margin-top: 0.3rem; }
+
+/* Orange-tinted callout box for tips and important notes */
+.wiki-callout {
+    background: var(--color-accent-glow);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-top: var(--space-xl);
+}
+
+.wiki-callout h4 { color: var(--color-accent); margin-bottom: var(--space-sm); }
+.wiki-callout ul { list-style: disc; padding-left: 1.2rem; }
+.wiki-callout li { color: var(--color-text-light); font-size: 0.9rem; line-height: 1.8; }
+.wiki-callout p  { color: var(--color-text-light); font-size: 0.9rem; margin: 0; }
+
+/* ════════════════════════════════════════════════════════════
+   19. CONTEXT-SENSITIVE HELP BAR
+   A small banner that appears at the top of certain pages
+   linking users to the relevant wiki help page.
+   Pages opt in by setting $help_link and $help_text in PHP.
+   ════════════════════════════════════════════════════════════ */
+.help-bar {
+    background: var(--color-accent-glow);
+    border-bottom: 1px solid var(--color-accent);
+    padding: 0.5rem var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.help-bar a {
+    color: var(--color-accent);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* ════════════════════════════════════════════════════════════
+   20. RESPONSIVE — MEDIA QUERIES
+   Breakpoints:
+     1024px — tablet landscape
+      768px — tablet portrait / large phone
+      480px — small phone
+   We use a "desktop first" approach — styles above are for
+   desktop, and these queries adjust for smaller screens.
+   ════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+    /* Reduce category grid from 6 to 3 columns on tablets */
+    .category-grid { grid-template-columns: repeat(3, 1fr); }
+
+    /* Stack footer to 2 columns */
+    .footer-inner  { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+
+    /* ── Mobile navigation ── */
+    /* Hide the horizontal nav links and show as a vertical dropdown instead */
+    .nav-links {
+        display: none;
+        position: fixed;
+        top: var(--nav-height);
+        left: 0;
+        right: 0;
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        flex-direction: column;
+        padding: var(--space-md);
+        gap: 0;
+        z-index: 999;
+    }
+
+    .nav-links.open { display: flex; } /* JS toggles this class */
+
+    .nav-links a {
+        display: block;
+        padding: 0.75rem 1rem;
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    /* Dropdown menus are shown inline on mobile instead of floating */
+    .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        border: none;
+        background: var(--color-surface-2);
+        padding-left: var(--space-md);
+    }
+
+    /* Show the hamburger button on mobile */
+    .nav-hamburger { display: flex; }
+
+    /* ── Layout adjustments ── */
+    .category-grid  { grid-template-columns: repeat(3, 1fr); }
+    .classes-grid   { grid-template-columns: 1fr; } /* single column on mobile */
+    .footer-inner   { grid-template-columns: 1fr; } /* stack all footer columns */
+
+    /* Stack hero buttons vertically on small screens */
+    .hero-actions { flex-direction: column; }
+    .hero-stats   { gap: var(--space-lg); }
+
+    /* Remove the scale transform on popular card — looks odd on mobile */
+    .membership-card--popular { transform: scale(1); }
+
+    /* Reduce section padding on mobile */
+    .section-pad { padding: var(--space-2xl) 0; }
+
+    /* Wiki — stack sidebar above content on mobile */
+    .wiki-grid { grid-template-columns: 1fr; }
+    .wiki-nav  { position: static; }
+}
+
+@media (max-width: 480px) {
+    /* 2 columns for categories on very small phones */
+    .category-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* Smaller hero title on tiny screens */
+    .hero-title { font-size: clamp(2.5rem, 12vw, 4rem); }
+
+    /* Stack footer bottom bar */
+    .footer-bottom { flex-direction: column; text-align: center; }
+}
